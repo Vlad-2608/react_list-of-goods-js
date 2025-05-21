@@ -66,11 +66,10 @@ export const App = () => {
   const [goods, setGoods] = useState(goodsFromServer);
   const [sortOrder, setSortOrder] = useState('initial');
   const [isReversed, setIsReversed] = useState(false);
+  const [isApplyingSort, setIsApplyingSort] = useState(true);
 
   const applySorting = useCallback(() => {
-    if (sortOrder === 'initial' && !isReversed) {
-      setGoods(goodsFromServer);
-
+    if (!isApplyingSort) {
       return;
     }
 
@@ -90,30 +89,40 @@ export const App = () => {
     }
 
     setGoods(sortedGoods);
-  }, [sortOrder, isReversed]);
+  }, [sortOrder, isReversed, isApplyingSort]);
 
   useEffect(() => {
     applySorting();
   }, [applySorting]);
 
   const handleSortAlphabetically = () => {
+    setIsApplyingSort(true);
     setSortOrder('alphabetical');
     setIsReversed(false);
   };
 
   const handleSortByLength = () => {
+    setIsApplyingSort(true);
     setSortOrder('length');
     setIsReversed(false);
   };
 
   const handleReverse = () => {
+    setIsApplyingSort(true);
     setIsReversed(prev => !prev);
   };
 
   const handleReset = () => {
+    setIsApplyingSort(false);
+
     setGoods(goodsFromServer);
+
     setSortOrder('initial');
     setIsReversed(false);
+
+    setTimeout(() => {
+      setIsApplyingSort(true);
+    }, 0);
   };
 
   const isInitialOrder =
