@@ -68,10 +68,19 @@ export const App = () => {
   const [isReversed, setIsReversed] = useState(false);
 
   const applySorting = useCallback(() => {
+    if (sortOrder === 'initial' && !isReversed) {
+      setGoods(goodsFromServer);
+
+      return;
+    }
+
     const sortedGoods = [...goodsFromServer];
 
     if (sortOrder === 'alphabetical') {
-      sortedGoods.sort((a, b) => a.localeCompare(b));
+      sortedGoods.sort(
+        (a, b) => a.localeCompare(b, 'uk', { sensitivity: 'base' }),
+        // eslint-disable-next-line function-paren-newline
+      );
     } else if (sortOrder === 'length') {
       sortedGoods.sort((a, b) => a.length - b.length);
     }
@@ -118,7 +127,7 @@ export const App = () => {
           className={`button is-info ${sortOrder === 'alphabetical' && !isReversed ? '' : 'is-light'}`}
           onClick={handleSortAlphabetically}
         >
-          Sort alphabetically
+          Сортувати за алфавітом
         </button>
 
         <button
@@ -126,7 +135,7 @@ export const App = () => {
           className={`button is-success ${sortOrder === 'length' && !isReversed ? '' : 'is-light'}`}
           onClick={handleSortByLength}
         >
-          Sort by length
+          Сортувати за довжиною
         </button>
 
         <button
@@ -134,7 +143,7 @@ export const App = () => {
           className={`button is-warning ${isReversed ? '' : 'is-light'}`}
           onClick={handleReverse}
         >
-          Reverse
+          Зворотний
         </button>
 
         {!isInitialOrder && (
@@ -143,7 +152,7 @@ export const App = () => {
             className="button is-danger"
             onClick={handleReset}
           >
-            Reset
+            Скинути
           </button>
         )}
       </div>
